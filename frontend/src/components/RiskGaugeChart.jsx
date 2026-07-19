@@ -78,7 +78,7 @@ export default function RiskGaugeChart({ riskData }) {
           marginBottom: "20px",
         }}
       >
-        ⚠️ Risk Score
+         Risk Score
       </h3>
 
       {!riskData ? (

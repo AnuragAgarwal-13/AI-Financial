@@ -115,7 +115,7 @@ export default function EMIBarChart({ emiData = null }) {
   return (
     <div style={styles.card}>
       <div style={styles.header}>
-        <span style={styles.icon}>📊</span>
+        <span style={styles.icon}></span>
         <h3 style={styles.title}>EMI Analysis</h3>
         {!empty && (
           <span
@@ -135,7 +135,7 @@ export default function EMIBarChart({ emiData = null }) {
 
       {empty ? (
         <div style={styles.empty}>
-          <span style={styles.emptyIcon}>📊</span>
+          <span style={styles.emptyIcon}></span>
           <p style={styles.emptyText}>Calculate EMI to see analysis</p>
         </div>
       ) : (

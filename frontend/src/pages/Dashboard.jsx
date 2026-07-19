@@ -44,7 +44,7 @@ export default function Dashboard() {
       >
 
         <h1 style={{ marginBottom: "25px" }}>
-          📊 Dashboard
+           Dashboard
         </h1>
 
         {/* ================= DASHBOARD ================= */}
@@ -64,7 +64,7 @@ export default function Dashboard() {
               {/* RISK */}
               <div className="card">
                 <p style={{ marginBottom: "10px" }}>
-                  ⚠️ Risk
+                   Risk
                 </p>
 
                 <h2
@@ -84,7 +84,7 @@ export default function Dashboard() {
               {/* EMI */}
               <div className="card">
                 <p style={{ marginBottom: "10px" }}>
-                  💰 EMI
+                   EMI
                 </p>
 
                 <h2>
@@ -95,7 +95,7 @@ export default function Dashboard() {
               {/* EXPENSES */}
               <div className="card">
                 <p style={{ marginBottom: "10px" }}>
-                  📉 Expenses
+                   Expenses
                 </p>
 
                 <h2>
@@ -107,7 +107,7 @@ export default function Dashboard() {
               
               {/* SAVINGS */}
             <div className="card">
-              <p>📊 Savings</p>
+              <p> Savings</p>
 
               <h2>
                   ₹{savingData?.monthlySavingsNeeded || 0}

@@ -30,7 +30,7 @@ export default function ExpensePieChart({ expenses = [] }) {
           color: "#94a3b8",
         }}
       >
-        📉 Add expenses to see breakdown
+         Add expenses to see breakdown
       </div>
     );
   }
@@ -108,7 +108,7 @@ export default function ExpensePieChart({ expenses = [] }) {
           marginBottom: "15px",
         }}
       >
-        🥧 Expense Breakdown
+         Expense Breakdown
       </h3>
 
       <div

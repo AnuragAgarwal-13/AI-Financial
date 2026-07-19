@@ -42,11 +42,11 @@ export default function SavingsProgressChart({ savingsData = null }) {
     return (
       <div style={styles.card}>
         <div style={styles.header}>
-          <span style={styles.icon}>🎯</span>
+          <span style={styles.icon}> </span>
           <h3 style={styles.title}>Savings Journey</h3>
         </div>
         <div style={styles.empty}>
-          <span style={styles.emptyIcon}>🎯</span>
+          <span style={styles.emptyIcon}></span>
           <p style={styles.emptyText}>Set a savings goal to see your projection</p>
         </div>
       </div>
@@ -139,7 +139,7 @@ export default function SavingsProgressChart({ savingsData = null }) {
   return (
     <div style={styles.card}>
       <div style={styles.header}>
-        <span style={styles.icon}>🎯</span>
+        <span style={styles.icon}></span>
         <h3 style={styles.title}>Savings Journey</h3>
         <span
           style={{

@@ -1,7 +1,7 @@
 export default function Sidebar({ setActive }) {
   return (
     <div className="sidebar">
-      <h2>⚡ Finance AI</h2>
+      <h1 >FINORA</h1>
 
       <button onClick={() => setActive("dashboard")}>Dashboard</button>
       <button onClick={() => setActive("risk")}>Risk Predictor</button>
