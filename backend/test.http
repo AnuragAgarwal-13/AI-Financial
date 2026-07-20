@@ -1,10 +1,14 @@
-### Test Prediction API
-POST http://localhost:5000/predict
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiYW51cmFnQGdtYWlsLmNvbSIsImlhdCI6MTc4NDU3NzM4NiwiZXhwIjoxNzg0NjYzNzg2fQ.pnj9Ohq4Xoz9a-wKx3yWS-pC0ALlaeKQpAMAgrTHGKU
+
+### Predict Risk
+
+POST http://localhost:5000/api/predictions
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "age": 35,
-  "income": 50000,
-  "loan_amount": 20000,
-  "credit_history": 1
+    "age":25,
+    "income":50000,
+    "loan_amount":1000000,
+    "credit_score":720
 }

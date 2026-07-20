@@ -1,55 +1,118 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 
-// ✅ Create app FIRST
+// ================================
+// IMPORT ROUTES
+// ================================
+
+const authRoutes = require("./routes/auth");
+const expenseRoutes = require("./routes/expenses");
+const savingsRoutes = require("./routes/savings");
+const profileRoutes = require("./routes/profile");
+const emiRoutes = require("./routes/emi");
+const predictionRoutes = require("./routes/predictions");
+const dashboardRoutes = require("./routes/dashboard");
+
+// ================================
+// CREATE APP
+// ================================
+
 const app = express();
 
-// ✅ Middleware
+// ================================
+// MIDDLEWARE
+// ================================
+
+// Allow requests from frontend
 app.use(cors());
+
+// Parse JSON
 app.use(express.json());
 
-// ✅ Root route
+// Parse URL Encoded Data
+app.use(express.urlencoded({ extended: true }));
+
+// ================================
+// ROUTES
+// ================================
+
+// Authentication
+app.use("/api/auth", authRoutes);
+
+// Expenses
+app.use("/api/expenses", expenseRoutes);
+
+// Savings
+app.use("/api/savings", savingsRoutes);
+
+// User Profile
+app.use("/api/profile", profileRoutes);
+
+// EMI
+app.use("/api/emi", emiRoutes);
+
+// AI Risk Prediction
+app.use("/api/predictions", predictionRoutes);
+
+// Dashboard
+app.use("/api/dashboard", dashboardRoutes);
+
+// ================================
+// HOME ROUTE
+// ================================
+
 app.get("/", (req, res) => {
-  res.send("✅ Server is running perfectly");
+    res.status(200).json({
+        success: true,
+        message: "Welcome to Finora Backend API"
+    });
 });
 
-// ✅ Prediction API
-app.post("/predict", (req, res) => {
-  const { age, income, loan_amount, credit_score } = req.body;
+// ================================
+// HEALTH CHECK
+// ================================
 
-  let risk = "";
-  let reason = "";
-
-  // 🚨 HIGH RISK CONDITIONS
-  if (loan_amount >= income * 50) {
-    risk = "High Risk";
-    reason = "Loan too large compared to income";
-  } 
-  else if (age > 60) {
-    risk = "High Risk";
-    reason = "Senior citizen risk";
-  } 
-  else if (credit_score <= 350) {
-    risk = "High Risk";
-    reason = "Very low credit score";
-  } 
-
-  // ⚖️ MEDIUM RISK
-  else if (credit_score <= 650) {
-    risk = "Medium Risk";
-    reason = "Moderate credit score";
-  } 
-
-  // ✅ LOW RISK
-  else {
-    risk = "Low Risk";
-    reason = "Good financial profile";
-  }
-
-  res.json({ risk, reason });
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Backend is healthy"
+    });
 });
 
-// ✅ Start server
-app.listen(5000, () => {
-  console.log("🚀 Server running on port 5000");
+// ================================
+// 404 HANDLER
+// ================================
+
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "API route not found"
+    });
+});
+
+// ================================
+// GLOBAL ERROR HANDLER
+// ================================
+
+app.use((err, req, res, next) => {
+
+    console.error("Global Error:", err);
+
+    res.status(500).json({
+        success: false,
+        message: "Internal Server Error"
+    });
+
+});
+
+// ================================
+// START SERVER
+// ================================
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`🚀 Finora Backend running on http://localhost:${PORT}`);
 });

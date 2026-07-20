@@ -13,3 +13,8 @@ build/
 
 # logs
 npm-debug.log*
+
+.env
+node_modules/
+
+backend/.env

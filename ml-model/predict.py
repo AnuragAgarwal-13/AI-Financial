@@ -3,25 +3,50 @@ import os
 import joblib
 import numpy as np
 
-# 🔹 Get current folder
+# ==========================================
+# GET CURRENT DIRECTORY
+# ==========================================
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# 🔹 Load model
+# ==========================================
+# LOAD TRAINED MODEL
+# ==========================================
+
 model_path = os.path.join(BASE_DIR, "loan_model.pkl")
 model = joblib.load(model_path)
 
-# 🔹 Get inputs from Node.js
+# ==========================================
+# READ INPUTS FROM NODE.JS
+# ==========================================
+
 age = float(sys.argv[1])
 income = float(sys.argv[2])
 loan_amount = float(sys.argv[3])
 credit_score = float(sys.argv[4])
 
-# 🔹 Create feature array (must match training)
-features = [age, income, loan_amount, credit_score]
-features = np.array([features])
+# ==========================================
+# CREATE FEATURE VECTOR
+# ==========================================
 
-# 🔹 Predict
-prediction = model.predict(features)
+features = np.array([[
+    age,
+    income,
+    loan_amount,
+    credit_score
+]])
 
-# 🔹 Output result
-print(prediction[0])
+# ==========================================
+# PREDICT
+# ==========================================
+
+prediction = int(model.predict(features)[0])
+
+# ==========================================
+# CONVERT TO RISK LABEL
+# ==========================================
+
+if prediction == 0:
+    print("LOW RISK")
+else:
+    print("HIGH RISK")
