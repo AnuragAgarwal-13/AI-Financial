@@ -1,173 +1,136 @@
-import { Doughnut } from "react-chartjs-2";
 import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend
-);
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer
+} from "recharts";
 
 export default function RiskGaugeChart({ riskData }) {
-  
-  const score =
-    riskData?.risk === "High Risk"
-      ? 90
-      : riskData?.risk === "Medium Risk"
-      ? 55
-      : riskData?.risk === "Low Risk"
-      ? 20
-      : 0;
 
-  const color =
-    score >= 70
-      ? "#ef4444"
-      : score >= 40
-      ? "#facc15"
-      : "#22c55e";
+  // Get prediction safely
+  const risk =
+    riskData?.prediction ||
+    riskData?.risk ||
+    "";
 
-  const data = {
-    datasets: [
-      {
-        data: [score, 100 - score],
-        backgroundColor: [
-          color,
-          "#1e293b"
-        ],
-        borderWidth: 0,
-        circumference: 180,
-        rotation: 270,
-        cutout: "75%",
-      },
-    ],
-  };
+  // Convert to uppercase so both
+  // "High Risk" and "HIGH RISK" work
+  const normalizedRisk = risk.toUpperCase();
 
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
+  let riskValue = 0;
+  let riskColor = "#64748b";
 
-    plugins: {
-      legend: {
-        display: false,
-      },
+  if (normalizedRisk === "LOW RISK") {
 
-      tooltip: {
-        enabled: false,
-      },
+    riskValue = 30;
+    riskColor = "#22c55e";
+
+  } else if (normalizedRisk === "MEDIUM RISK") {
+
+    riskValue = 60;
+    riskColor = "#facc15";
+
+  } else if (normalizedRisk === "HIGH RISK") {
+
+    riskValue = 90;
+    riskColor = "#ef4444";
+
+  }
+
+  const data = [
+    {
+      name: "Risk",
+      value: riskValue
     },
-  };
+    {
+      name: "Remaining",
+      value: 100 - riskValue
+    }
+  ];
 
   return (
-    <div
-      style={{
-        background:
-          "linear-gradient(135deg,#1e293b,#0f172a)",
-        border: "1px solid #334155",
-        borderRadius: "16px",
-        padding: "20px",
-        minHeight: "350px",
-      }}
-    >
+
+    <div className="card">
+
       <h3
         style={{
-          color: "white",
-          marginBottom: "20px",
+          marginBottom: "10px"
         }}
       >
-         Risk Score
+        Risk Analysis
       </h3>
 
-      {!riskData ? (
+      <div
+        style={{
+          width: "100%",
+          height: "250px",
+          position: "relative"
+        }}
+      >
+
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+        >
+
+          <PieChart>
+
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              startAngle={180}
+              endAngle={0}
+              innerRadius={70}
+              outerRadius={100}
+              dataKey="value"
+            >
+
+              <Cell fill={riskColor} />
+
+              <Cell fill="#334155" />
+
+            </Pie>
+
+          </PieChart>
+
+        </ResponsiveContainer>
+
+
+        {/* CENTER VALUE */}
+
         <div
           style={{
-            height: "250px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "#94a3b8",
+            position: "absolute",
+            top: "55%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            textAlign: "center"
           }}
         >
-          Calculate risk to see score
+
+          <h2
+            style={{
+              color: riskColor,
+              margin: 0
+            }}
+          >
+            {riskValue}%
+          </h2>
+
+          <p
+            style={{
+              marginTop: "5px"
+            }}
+          >
+            {risk || "No Prediction"}
+          </p>
+
         </div>
-      ) : (
-        <>
-          <div
-            style={{
-              position: "relative",
-              height: "220px",
-            }}
-          >
-            <Doughnut
-              data={data}
-              options={options}
-            />
 
-            <div
-              style={{
-                position: "absolute",
-                top: "60%",
-                left: "50%",
-                transform:
-                  "translate(-50%, -50%)",
-                textAlign: "center",
-              }}
-            >
-              <h1
-                style={{
-                  color,
-                  margin: 0,
-                  fontSize: "42px",
-                }}
-              >
-                {score}
-              </h1>
+      </div>
 
-              <p
-                style={{
-                  color: "#94a3b8",
-                  margin: 0,
-                }}
-              >
-                Risk Score
-              </p>
-            </div>
-          </div>
-
-          <div
-            style={{
-              textAlign: "center",
-              marginTop: "-10px",
-            }}
-          >
-            <h2
-              style={{
-                color,
-                margin: 0,
-              }}
-            >
-              {riskData.risk}
-            </h2>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: "15px",
-              color: "#94a3b8",
-              fontSize: "13px",
-            }}
-          >
-            <span>Low</span>
-            <span>Medium</span>
-            <span>High</span>
-          </div>
-        </>
-      )}
     </div>
+
   );
 }

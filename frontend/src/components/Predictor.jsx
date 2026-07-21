@@ -1,155 +1,375 @@
 import { useState } from "react";
-import axios from "axios";
+import API from "../services/api";
 
 export default function Predictor({ setRiskData }) {
-  const [form, setForm] = useState({
-    age: "",
-    income: "",
-    loan: "",
-    credit: ""
-  });
 
-  const [result, setResult] = useState({
-    risk: "",
-    reason: ""
-  });
+  const [age, setAge] = useState("");
+  const [income, setIncome] = useState("");
+  const [loan, setLoan] = useState("");
+  const [credit, setCredit] = useState("");
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
-  };
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handlePredict = async () => {
+  const predictRisk = async () => {
+
+    // ===============================
+    // VALIDATION
+    // ===============================
+
+    if (!age || !income || !loan || !credit) {
+      alert("Please enter all details");
+      return;
+    }
+
     try {
-      const res = await axios.post(
-        "http://localhost:5000/predict",
+
+      setLoading(true);
+
+      // ==========================================
+      // UPDATED BACKEND CONNECTION
+      // ==========================================
+      //
+      // OLD:
+      // http://localhost:5000/predict
+      //
+      // NEW:
+      // http://localhost:5000/api/predictions
+      //
+      // API automatically adds JWT token
+      // from localStorage.
+
+      const response = await API.post(
+        "/predictions",
         {
-          age: Number(form.age),
-          income: Number(form.income),
-          loan_amount: Number(form.loan),
-          credit_score: Number(form.credit)
+          age: Number(age),
+          income: Number(income),
+          loan_amount: Number(loan),
+          credit_score: Number(credit)
         }
       );
 
-      // Store result locally
-      setResult(res.data);
+      console.log("Prediction Response:", response.data);
 
-      // 🔥 Send risk data to dashboard for gauge chart
-      setRiskData({
-        risk: res.data.risk,
+      // ==========================================
+      // BACKEND RESPONSE
+      // ==========================================
 
-        score:
-          res.data.risk === "High Risk"
-            ? 90
-            : res.data.risk === "Medium Risk"
-            ? 55
-            : 20
-      });
+      const prediction = response.data.prediction;
+      const reason = response.data.reason;
 
-    } catch (err) {
-      console.error(err);
-      alert("Backend not connected ❌");
+      // ==========================================
+      // KEEP FORMAT COMPATIBLE WITH DASHBOARD
+      // ==========================================
+
+      const predictionResult = {
+        risk: prediction,
+        prediction: prediction,
+        reason: reason
+      };
+
+      // Show inside Predictor AI Insights
+      setResult(predictionResult);
+
+      // Send result to Dashboard
+      if (setRiskData) {
+        setRiskData(predictionResult);
+      }
+
+    } catch (error) {
+
+      console.error("Prediction Error:", error);
+
+      // ==========================================
+      // AUTHENTICATION ERROR
+      // ==========================================
+
+      if (error.response?.status === 401) {
+
+        alert(
+          "Your login session has expired. Please login again."
+        );
+
+        return;
+      }
+
+      // ==========================================
+      // BACKEND ERROR
+      // ==========================================
+
+      alert(
+        error.response?.data?.message ||
+        "Prediction failed. Please try again."
+      );
+
+    } finally {
+
+      setLoading(false);
+
     }
   };
 
+
+  // ==========================================
+  // AI INSIGHT MESSAGE
+  // ==========================================
+
+  const getInsight = () => {
+
+    if (!result) {
+      return "Enter details to get prediction";
+    }
+
+    if (result.prediction === "HIGH RISK") {
+
+      return (
+        <>
+          <h2
+            style={{
+              color: "#ff4d4d",
+              marginBottom: "15px"
+            }}
+          >
+            HIGH RISK
+          </h2>
+
+          <p>
+            {result.reason}
+          </p>
+
+          <p style={{ marginTop: "15px" }}>
+            Your financial profile indicates a higher
+            loan repayment risk.
+          </p>
+
+          <p style={{ marginTop: "10px" }}>
+            Consider reducing the loan amount,
+            increasing your income-to-loan ratio and
+            improving your credit score.
+          </p>
+        </>
+      );
+    }
+
+    if (result.prediction === "MEDIUM RISK") {
+
+      return (
+        <>
+          <h2
+            style={{
+              color: "#facc15",
+              marginBottom: "15px"
+            }}
+          >
+            MEDIUM RISK
+          </h2>
+
+          <p>
+            {result.reason}
+          </p>
+
+          <p style={{ marginTop: "15px" }}>
+            Your financial profile is moderately stable,
+            but some factors may increase repayment risk.
+          </p>
+
+          <p style={{ marginTop: "10px" }}>
+            Try improving your credit score and maintaining
+            a healthy loan-to-income ratio.
+          </p>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <h2
+          style={{
+            color: "#22c55e",
+            marginBottom: "15px"
+          }}
+        >
+          LOW RISK
+        </h2>
+
+        <p>
+          {result.reason}
+        </p>
+
+        <p style={{ marginTop: "15px" }}>
+          Your financial profile appears healthy.
+        </p>
+
+        <p style={{ marginTop: "10px" }}>
+          Continue maintaining a good credit score and
+          responsible borrowing habits.
+        </p>
+      </>
+    );
+  };
+
+
   return (
-    <div className="grid-2">
 
-      {/* LEFT SIDE */}
-      <div className="box">
-        <h3>AI Risk Predictor</h3>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "2fr 1fr",
+        gap: "15px"
+      }}
+    >
+
+      {/* ========================================== */}
+      {/* AI RISK PREDICTOR */}
+      {/* ========================================== */}
+
+      <div
+        style={{
+          background: "#1e293b",
+          borderRadius: "10px",
+          overflow: "hidden"
+        }}
+      >
+
+        <h2
+          style={{
+            padding: "20px",
+            margin: 0
+          }}
+        >
+          AI Risk Predictor
+        </h2>
+
+
+        {/* AGE */}
 
         <input
-          name="age"
+          type="number"
           placeholder="Age"
-          onChange={handleChange}
+          value={age}
+          onChange={(e) => setAge(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "12px",
+            background: "#020617",
+            color: "white",
+            border: "none",
+            marginBottom: "20px"
+          }}
         />
 
+
+        {/* INCOME */}
+
         <input
-          name="income"
+          type="number"
           placeholder="Income"
-          onChange={handleChange}
+          value={income}
+          onChange={(e) => setIncome(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "12px",
+            background: "#020617",
+            color: "white",
+            border: "none",
+            marginBottom: "20px"
+          }}
         />
 
+
+        {/* LOAN AMOUNT */}
+
         <input
-          name="loan"
+          type="number"
           placeholder="Loan Amount"
-          onChange={handleChange}
+          value={loan}
+          onChange={(e) => setLoan(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "12px",
+            background: "#020617",
+            color: "white",
+            border: "none",
+            marginBottom: "20px"
+          }}
         />
 
+
+        {/* CREDIT SCORE */}
+
         <input
-          name="credit"
+          type="number"
           placeholder="Credit Score"
-          onChange={handleChange}
+          value={credit}
+          onChange={(e) => setCredit(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "12px",
+            background: "#020617",
+            color: "white",
+            border: "none",
+            marginBottom: "10px"
+          }}
         />
+
+
+        {/* PREDICT BUTTON */}
 
         <button
-          className="btn"
-          onClick={handlePredict}
+          onClick={predictRisk}
+          disabled={loading}
+          style={{
+            background: "#8b5cf6",
+            color: "white",
+            border: "none",
+            padding: "10px 15px",
+            borderRadius: "7px",
+            marginBottom: "20px",
+            cursor: loading
+              ? "not-allowed"
+              : "pointer"
+          }}
         >
-          Predict Risk
+
+          {loading
+            ? "Predicting..."
+            : "Predict Risk"}
+
         </button>
+
       </div>
 
-      {/* RIGHT SIDE */}
-      <div className="box purple">
-        <h3>AI Insights</h3>
 
-        {!result.risk && (
-          <p>Enter details to get prediction</p>
-        )}
+      {/* ========================================== */}
+      {/* AI INSIGHTS */}
+      {/* ========================================== */}
 
-        {result.risk && (
-          <>
-            <p
-              style={{
-                fontWeight: "bold",
-                color:
-                  result.risk === "High Risk"
-                    ? "#ef4444"
-                    : result.risk === "Medium Risk"
-                    ? "#facc15"
-                    : "#22c55e"
-              }}
-            >
-              {result.risk}
-            </p>
+      <div
+        style={{
+          background:
+            "linear-gradient(135deg, #7e22ce, #581c87)",
+          padding: "20px",
+          borderRadius: "10px"
+        }}
+      >
 
-            <p style={{ color: "#ccc" }}>
-              {result.reason}
-            </p>
+        <h2>
+          AI Insights
+        </h2>
 
-            {result.risk === "High Risk" && (
-              <>
-                <p>
-                  💡 Consider reducing loan or improving
-                  credit score
-                </p>
+        <div
+          style={{
+            marginTop: "15px"
+          }}
+        >
 
-                <p>
-                  ⚠️ Age should be less than 60 for better
-                  approval chances
-                </p>
-              </>
-            )}
+          {getInsight()}
 
-            {result.risk === "Medium Risk" && (
-              <p>
-                💡 Maintain stable income and reduce liabilities
-              </p>
-            )}
+        </div>
 
-            {result.risk === "Low Risk" && (
-              <p>
-                💡 You are financially stable 👍
-              </p>
-            )}
-          </>
-        )}
       </div>
 
     </div>
+
   );
 }
