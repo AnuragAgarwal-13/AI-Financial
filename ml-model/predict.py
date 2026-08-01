@@ -1,20 +1,4 @@
 import sys
-import os
-import joblib
-import numpy as np
-
-# ==========================================
-# GET CURRENT DIRECTORY
-# ==========================================
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# ==========================================
-# LOAD TRAINED MODEL
-# ==========================================
-
-model_path = os.path.join(BASE_DIR, "loan_model.pkl")
-model = joblib.load(model_path)
 
 # ==========================================
 # READ INPUTS FROM NODE.JS
@@ -26,27 +10,23 @@ loan_amount = float(sys.argv[3])
 credit_score = float(sys.argv[4])
 
 # ==========================================
-# CREATE FEATURE VECTOR
+# RULE-BASED RISK PREDICTION
 # ==========================================
 
-features = np.array([[
-    age,
-    income,
-    loan_amount,
-    credit_score
-]])
-
-# ==========================================
-# PREDICT
-# ==========================================
-
-prediction = int(model.predict(features)[0])
-
-# ==========================================
-# CONVERT TO RISK LABEL
-# ==========================================
-
-if prediction == 0:
-    print("LOW RISK")
-else:
+# Rule 1: Senior Citizen
+if age > 60:
     print("HIGH RISK")
+
+# Rule 2: Loan amount too high compared to income
+elif loan_amount > income * 50:
+    print("HIGH RISK")
+
+# Rule 3: Credit Score
+elif credit_score <= 350:
+    print("HIGH RISK")
+
+elif credit_score <= 650:
+    print("MEDIUM RISK")
+
+else:
+    print("LOW RISK")

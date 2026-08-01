@@ -1,23 +1,28 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import API from "../services/api";
+import { Eye, EyeOff, ArrowRight, TrendingUp } from "lucide-react";
 
-function Signup() {
+
+import API from "../services/api";
+import signupImage from "../assets/signup_finance.png";
+
+export default function Signup() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
+
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ==========================================
-  // HANDLE INPUT CHANGE
-  // ==========================================
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -25,28 +30,33 @@ function Signup() {
     });
   };
 
-  // ==========================================
-  // HANDLE SIGNUP
-  // ==========================================
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setError("");
-    setSuccess("");
-    setLoading(true);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must contain at least 6 characters.");
+      return;
+    }
 
     try {
-      const response = await API.post("/auth/signup", formData);
+      setLoading(true);
 
-      setSuccess(
-        response.data?.message || "Account created successfully!"
-      );
+      await API.post("/auth/signup", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
 
-      // Redirect to login after successful signup
-      setTimeout(() => {
-        navigate("/login");
-      }, 1000);
+      alert("Account created successfully!");
 
+      navigate("/login");
     } catch (err) {
       console.error("Signup Error:", err);
 
@@ -60,123 +70,296 @@ function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+    <div className="signup-page">
 
-      <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-8">
+      <div className="signup-container">
 
-        {/* LOGO */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white">
-            Finora
-          </h1>
+        {/* ==========================
+            LEFT PANEL
+        ========================== */}
 
-          <p className="text-slate-400 mt-2">
-            AI Financial Risk & Credit Intelligence
-          </p>
-        </div>
+        <section className="signup-visual">
 
-        <h2 className="text-2xl font-semibold text-white mb-6">
-          Create Account
-        </h2>
+          <div className="signup-brand">
 
-        {/* ERROR MESSAGE */}
-        {error && (
-          <div className="bg-red-500/10 border border-red-500 text-red-400 p-3 rounded-lg mb-5">
-            {error}
+            <div className="signup-logo">
+              F
+            </div>
+
+            <div>
+              <h2>Finora</h2>
+
+              <span>
+                AI Financial Intelligence
+              </span>
+            </div>
+
           </div>
-        )}
 
-        {/* SUCCESS MESSAGE */}
-        {success && (
-          <div className="bg-green-500/10 border border-green-500 text-green-400 p-3 rounded-lg mb-5">
-            {success}
+          <div className="visual-heading">
+
+            <div className="visual-icon">
+              <TrendingUp size={22} />
+            </div>
+
+            <h1>
+              Finance made
+              <br />
+              smarter with Finora.
+            </h1>
+
+            <p>
+              Understand risk, manage expenses and
+              build a stronger financial future.
+            </p>
+
           </div>
-        )}
 
-        {/* SIGNUP FORM */}
-        <form onSubmit={handleSubmit}>
+          {/* MAIN ILLUSTRATION */}
 
-          {/* NAME */}
-          <div className="mb-4">
-            <label className="block text-slate-300 mb-2">
-              Name
-            </label>
+          <div className="finance-illustration">
 
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              placeholder="Enter your name"
-              className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 outline-none focus:border-blue-500"
+            <img
+              src={signupImage}
+              alt="Finora financial illustration"
             />
+
           </div>
 
-          {/* EMAIL */}
-          <div className="mb-4">
-            <label className="block text-slate-300 mb-2">
-              Email
-            </label>
+          <div className="visual-footer">
 
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Enter your email"
-              className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 outline-none focus:border-blue-500"
-            />
+            <div>
+              <strong>AI Powered</strong>
+              <span>Risk Intelligence</span>
+            </div>
+
+            <div>
+              <strong>Smart</strong>
+              <span>Expense Tracking</span>
+            </div>
+
+            <div>
+              <strong>Better</strong>
+              <span>Savings Planning</span>
+            </div>
+
           </div>
 
-          {/* PASSWORD */}
-          <div className="mb-6">
-            <label className="block text-slate-300 mb-2">
-              Password
-            </label>
+        </section>
 
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              minLength={6}
-              placeholder="Minimum 6 characters"
-              className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 outline-none focus:border-blue-500"
-            />
+
+        {/* ==========================
+            RIGHT PANEL
+        ========================== */}
+
+        <section className="signup-form-section">
+
+          {/* TOP LOGIN */}
+
+          <div className="existing-account">
+
+            <span>Already a member?</span>
+
+            <Link to="/login">
+              Sign in now
+            </Link>
+
           </div>
 
-          {/* SIGNUP BUTTON */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition"
-          >
-            {loading ? "Creating Account..." : "Create Account"}
-          </button>
 
-        </form>
+          <div className="signup-form-container">
 
-        {/* LOGIN LINK */}
-        <p className="text-center text-slate-400 mt-6">
-          Already have an account?{" "}
+            <div className="form-heading">
 
-          <Link
-            to="/login"
-            className="text-blue-400 hover:text-blue-300"
-          >
-            Login
-          </Link>
-        </p>
+              <span className="small-heading">
+                GET STARTED
+              </span>
+
+              <h1>
+                Sign up for an account
+              </h1>
+
+              <p>
+                Create your Finora account and start
+                managing your finances intelligently.
+              </p>
+
+            </div>
+
+
+            {/* ERROR */}
+
+            {error && (
+              <div className="signup-error">
+                {error}
+              </div>
+            )}
+
+
+            <form onSubmit={handleSubmit}>
+
+              {/* NAME */}
+
+              <div className="signup-field">
+
+                <label>
+                  Full name
+                </label>
+
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Enter your full name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+
+              {/* EMAIL */}
+
+              <div className="signup-field">
+
+                <label>
+                  Email
+                </label>
+
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email address"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+
+              {/* PASSWORD */}
+
+              <div className="signup-field">
+
+                <label>
+                  Password
+                </label>
+
+                <div className="password-field">
+
+                  <input
+                    type={
+                      showPassword
+                        ? "text"
+                        : "password"
+                    }
+                    name="password"
+                    placeholder="Minimum 6 characters"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowPassword(!showPassword)
+                    }
+                  >
+                    {showPassword ? (
+                      <EyeOff size={19} />
+                    ) : (
+                      <Eye size={19} />
+                    )}
+                  </button>
+
+                </div>
+
+              </div>
+
+
+              {/* CONFIRM PASSWORD */}
+
+              <div className="signup-field">
+
+                <label>
+                  Confirm password
+                </label>
+
+                <div className="password-field">
+
+                  <input
+                    type={
+                      showConfirmPassword
+                        ? "text"
+                        : "password"
+                    }
+                    name="confirmPassword"
+                    placeholder="Re-enter your password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowConfirmPassword(
+                        !showConfirmPassword
+                      )
+                    }
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff size={19} />
+                    ) : (
+                      <Eye size={19} />
+                    )}
+                  </button>
+
+                </div>
+
+              </div>
+
+
+              {/* SIGNUP BUTTON */}
+
+              <button
+                className="signup-submit"
+                type="submit"
+                disabled={loading}
+              >
+
+                <span>
+                  {loading
+                    ? "Creating account..."
+                    : "Sign up"}
+                </span>
+
+                {!loading && (
+                  <ArrowRight size={20} />
+                )}
+
+              </button>
+
+            </form>
+
+
+            <div className="mobile-login">
+
+              Already have an account?{" "}
+
+              <Link to="/login">
+                Log in
+              </Link>
+
+            </div>
+
+          </div>
+
+        </section>
 
       </div>
     </div>
   );
 }
-
-// THIS IS REQUIRED BECAUSE App.jsx USES:
-// import Signup from "./pages/Signup";
-
-export default Signup;

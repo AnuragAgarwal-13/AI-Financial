@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Mail, Lock, Eye, EyeOff, ArrowUpRight } from "lucide-react";
+
 import API from "../services/api";
+import loginHero from "../assets/Login_hero.png";
+
 
 function Login() {
   const navigate = useNavigate();
@@ -10,8 +14,14 @@ function Login() {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // ==========================================
+  // HANDLE INPUT
+  // ==========================================
 
   const handleChange = (e) => {
     setFormData({
@@ -20,6 +30,10 @@ function Login() {
     });
   };
 
+  // ==========================================
+  // LOGIN
+  // ==========================================
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -27,12 +41,15 @@ function Login() {
     setLoading(true);
 
     try {
-      const response = await API.post("/auth/login", formData);
+      const response = await API.post("/auth/login", {
+        email: formData.email,
+        password: formData.password,
+      });
 
-      // Save JWT
+      // Save JWT token
       localStorage.setItem("token", response.data.token);
 
-      // Save user information
+      // Save logged-in user
       localStorage.setItem(
         "user",
         JSON.stringify(response.data.user)
@@ -41,11 +58,11 @@ function Login() {
       // Go to dashboard
       navigate("/dashboard");
     } catch (err) {
-      console.error(err);
+      console.error("Login Error:", err);
 
       setError(
         err.response?.data?.message ||
-          "Login failed. Please check your email and password."
+          "Invalid email or password."
       );
     } finally {
       setLoading(false);
@@ -53,106 +70,248 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+    <div className="finora-login-page">
 
-      <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-8">
+      <div className="finora-login-container">
 
-        {/* LOGO */}
+        {/* =====================================
+            LEFT SIDE - LOGIN FORM
+        ===================================== */}
 
-        <div className="text-center mb-8">
+        <section className="login-left">
 
-          <h1 className="text-4xl font-bold text-white">
-            Finora
-          </h1>
+          {/* BRAND */}
 
-          <p className="text-slate-400 mt-2">
-            AI Financial Risk & Credit Intelligence
-          </p>
+          <div className="login-brand">
 
-        </div>
+            <div className="login-brand-icon">
+              F
+            </div>
 
-        <h2 className="text-2xl font-semibold text-white mb-6">
-          Welcome Back
-        </h2>
+            <div>
+              <h2>Finora</h2>
 
-        {/* ERROR */}
-
-        {error && (
-          <div className="bg-red-500/10 border border-red-500 text-red-400 p-3 rounded-lg mb-5">
-            {error}
-          </div>
-        )}
-
-        {/* LOGIN FORM */}
-
-        <form onSubmit={handleSubmit}>
-
-          {/* EMAIL */}
-
-          <div className="mb-5">
-
-            <label className="block text-slate-300 mb-2">
-              Email
-            </label>
-
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Enter your email"
-              className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 outline-none focus:border-blue-500"
-            />
+              <p>
+                AI Financial Risk & Credit Intelligence
+              </p>
+            </div>
 
           </div>
 
-          {/* PASSWORD */}
 
-          <div className="mb-6">
+          {/* REGISTER TOP */}
 
-            <label className="block text-slate-300 mb-2">
-              Password
-            </label>
+          <div className="login-register-top">
+            <span>Don't have an account?</span>
 
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Enter your password"
-              className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-3 outline-none focus:border-blue-500"
-            />
+            <Link to="/signup">
+              Register
+            </Link>
+          </div>
+
+
+          {/* FORM AREA */}
+
+          <div className="login-form-wrapper">
+
+            <div className="login-small-icon">
+              <ArrowUpRight size={20} />
+            </div>
+
+            <h1>
+              Log in to your account
+            </h1>
+
+            <p className="login-subtitle">
+              Welcome back! Please enter your details.
+            </p>
+
+
+            {/* ERROR */}
+
+            {error && (
+              <div className="login-error">
+                {error}
+              </div>
+            )}
+
+
+            <form onSubmit={handleSubmit}>
+
+              {/* EMAIL */}
+
+              <div className="login-field">
+
+                <label>
+                  Email Address
+                </label>
+
+                <div className="login-input-box">
+
+                  <Mail size={17} />
+
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="name@example.com"
+                    required
+                  />
+
+                </div>
+
+              </div>
+
+
+              {/* PASSWORD */}
+
+              <div className="login-field">
+
+                <label>
+                  Password
+                </label>
+
+                <div className="login-input-box">
+
+                  <Lock size={17} />
+
+                  <input
+                    type={
+                      showPassword
+                        ? "text"
+                        : "password"
+                    }
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Enter your password"
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    className="login-eye-button"
+                    onClick={() =>
+                      setShowPassword(!showPassword)
+                    }
+                  >
+                    {showPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+
+                </div>
+
+              </div>
+
+
+              {/* REMEMBER ME */}
+
+              <div className="login-options">
+
+                <label className="remember-box">
+
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) =>
+                      setRememberMe(e.target.checked)
+                    }
+                  />
+
+                  <span>
+                    Keep me logged in
+                  </span>
+
+                </label>
+
+              </div>
+
+
+              {/* LOGIN BUTTON */}
+
+              <button
+                type="submit"
+                className="login-submit-button"
+                disabled={loading}
+              >
+                {loading ? "Logging in..." : "Log In"}
+              </button>
+
+            </form>
+
+
+            {/* CREATE ACCOUNT */}
+
+            <div className="login-bottom-register">
+
+              <span>
+                Don't have an account?
+              </span>
+
+              <Link to="/signup">
+                Create Account
+              </Link>
+
+            </div>
 
           </div>
 
-          {/* LOGIN BUTTON */}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition"
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
+          {/* FOOTER */}
 
-        </form>
+          <div className="login-footer">
+            © 2026 Finora
+          </div>
 
-        {/* SIGNUP LINK */}
+        </section>
 
-        <p className="text-center text-slate-400 mt-6">
 
-          Don't have an account?{" "}
+        {/* =====================================
+            RIGHT SIDE
+        ===================================== */}
 
-          <Link
-            to="/signup"
-            className="text-blue-400 hover:text-blue-300"
-          >
-            Create Account
-          </Link>
+        <section className="login-right">
 
-        </p>
+          <div className="login-right-content">
+
+            <span className="login-ai-badge">
+              AI Financial Intelligence
+            </span>
+
+            <h1>
+              Your smarter way to
+              <br />
+              understand financial risk.
+            </h1>
+
+            <p>
+              Risk prediction, expense intelligence,
+              EMI analysis and savings planning — all
+              in one dashboard.
+            </p>
+
+
+            {/* DASHBOARD IMAGE */}
+
+            <div className="login-dashboard-image">
+
+              <img
+                src={loginHero}
+                alt="Finora financial dashboard"
+                 className="login-hero-image"
+                style={{ width: "100%", height: "100%" , objectFit: "contain",
+                }}
+              />
+
+            </div>
+
+          </div>
+
+        </section>
 
       </div>
 
@@ -160,12 +319,4 @@ function Login() {
   );
 }
 
-/*
-IMPORTANT:
-App.jsx imports Login as a default import:
-
-import Login from "./pages/Login";
-
-Therefore Login.jsx MUST have this default export.
-*/
 export default Login;
