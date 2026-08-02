@@ -73,7 +73,7 @@ export default function Predictor({ setRiskData }) {
 
     switch (result.prediction) {
       case "HIGH RISK":
-        return "Reduce your loan amount, improve your credit score and increase your income before applying.";
+        return "Reduce your loan amount, improve your credit score, increase your income before applying and your age must be less than 60 .";
 
       case "MEDIUM RISK":
         return "Improve your credit score and reduce your debt-to-income ratio for better approval chances.";
