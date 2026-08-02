@@ -187,9 +187,9 @@ python train_model.py
 
 **Anurag Agarwal**
 
-GitHub: https://github.com/yourusername
+GitHub: https://github.com/AnuragAgarwal-13
 
-LinkedIn: https://linkedin.com/in/yourprofile
+LinkedIn: https://www.linkedin.com/in/anurag-agarwal-b45659290/
 
 ---
 
