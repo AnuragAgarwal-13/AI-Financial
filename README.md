@@ -1,98 +1,198 @@
-# AI Financial Risk
+# 💰 Finora – AI Financial Risk & Credit Intelligence Platform
 
-AI Financial Risk is a full-stack financial planning dashboard that helps users estimate loan risk, calculate EMI, track expenses, and plan savings. The project combines a React frontend, an Express backend, and machine-learning scripts for credit-risk analysis.
+Finora is a full-stack AI-powered financial platform that helps users assess loan risk, calculate EMIs, track expenses, and plan savings through an intuitive dashboard. It combines Machine Learning with modern web technologies to provide intelligent financial insights.
 
-## Features
+---
 
-- AI-powered loan risk prediction
-- EMI calculator with salary-to-EMI insight
-- Expense tracker with monthly savings summary
-- Savings planner with goal-based recommendations
-- Interactive dashboard with charts for risk, EMI, expenses, and savings
+## 🚀 Features
 
-## Tech Stack
+- 🔐 Secure User Authentication (JWT)
+- 🤖 AI-based Credit Risk Prediction
+- 💳 EMI Calculator
+- 💸 Expense Tracker
+- 🎯 Savings Planner
+- 📊 Interactive Financial Dashboard
+- 📈 Real-time Charts & Analytics
+- 📱 Responsive Modern UI
 
-- Frontend: React + Vite + Tailwind CSS
-- Backend: Node.js + Express
-- Data & ML: Python, pandas, scikit-learn, joblib
+---
 
-## Project Structure
+## 🖥️ Tech Stack
 
-- frontend/ — user interface and dashboard components
-- backend/ — Express API server
-- ml-model/ — data cleaning, training, and prediction scripts
-- dataset/ — Loan default dataset used for model experiments
+### Frontend
+- React.js
+- React Router
+- Axios
+- Recharts
+- Tailwind CSS / CSS3
+- Lucide React Icons
 
-## Getting Started
+### Backend
+- Node.js
+- Express.js
+- JWT Authentication
+- REST APIs
 
-### 1. Install dependencies
+### Machine Learning
+- Python
+- Scikit-learn
+- Random Forest Classifier
+- NumPy
+- Pandas
 
-Frontend
+---
+
+## 📂 Project Structure
+
+```
+Finora/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── pages/
+│   │   ├── components/
+│   │   ├── assets/
+│   │   ├── services/
+│   │   └── App.jsx
+│
+├── backend/
+│   ├── routes/
+│   ├── middleware/
+│   ├── models/
+│   ├── server.js
+│   └── package.json
+│
+├── ml-model/
+│   ├── train_model.py
+│   ├── predict.py
+│   └── loan_model.pkl
+│
+└── README.md
+```
+
+---
+
+## ✨ Modules
+
+### 🔐 Authentication
+- User Registration
+- Secure Login
+- JWT Authentication
+- Protected Routes
+
+### 🤖 AI Risk Prediction
+Predicts loan approval risk using a Random Forest Machine Learning model and categorizes applications into:
+- 🟢 Low Risk
+- 🟡 Medium Risk
+- 🔴 High Risk
+
+### 💳 EMI Calculator
+- Monthly EMI Calculation
+- Interest Analysis
+- Payment Breakdown
+
+### 💸 Expense Tracker
+- Add & Manage Expenses
+- Category-wise Tracking
+- Expense Distribution Charts
+
+### 🎯 Savings Planner
+- Set Savings Goals
+- Monitor Progress
+- Visual Savings Analytics
+
+### 📊 Dashboard
+- Financial Summary Cards
+- Risk Analysis
+- EMI Insights
+- Expense Analytics
+- Savings Progress
+
+---
+
+## 📸 Screenshots
+
+### Login
+
+<img src="screenshots/login.png" width="900">
+
+### Signup
+
+<img src="screenshots/signup.png" width="900">
+
+### Dashboard
+
+<img src="screenshots/dashboard.png" width="900">
+
+---
+
+## ⚙️ Installation
+
+### Clone Repository
+
+```bash
+git clone https://github.com/yourusername/Finora.git
+```
+
+### Frontend
 
 ```bash
 cd frontend
 npm install
-```
-
-Backend
-
-```bash
-cd backend
-npm install
-```
-
-ML tools (optional for model training)
-
-```bash
-pip install pandas scikit-learn joblib
-```
-
-### 2. Run the app
-
-Start the backend server:
-
-```bash
-cd backend
-node server.js
-```
-
-Start the frontend:
-
-```bash
-cd frontend
 npm run dev
 ```
 
-The frontend will usually run at http://localhost:5173 and the backend at http://localhost:5000.
+### Backend
 
-### 3. Train the ML model (optional)
+```bash
+cd backend
+npm install
+npm start
+```
+
+### Machine Learning
 
 ```bash
 cd ml-model
 python train_model.py
 ```
 
-This generates the model file used by the prediction workflow.
+---
 
-## Default Login
+## 📈 Future Improvements
 
-For the current UI flow, use:
+- Email Verification
+- Credit Score Monitoring
+- Investment Portfolio Tracker
+- AI Financial Assistant
+- Budget Recommendations
+- PDF Report Generation
+- Loan Comparison Engine
 
-- Email: admin@gmail.com
-- Password: 1234
+---
 
-## API
+## 🎯 Learning Outcomes
 
-The backend currently exposes:
+- Full Stack Development
+- REST API Design
+- JWT Authentication
+- React Component Architecture
+- Machine Learning Integration
+- Financial Data Visualization
+- Responsive UI Development
 
-- GET / — health check
-- POST /predict — returns a loan risk category and explanation
+---
 
-## Notes
+## 👨‍💻 Author
 
-- The current backend risk logic is a rule-based prediction endpoint.
-- The ML scripts in the ml-model folder are available for training and experimentation with the dataset.
+**Anurag Agarwal**
 
-## License
+GitHub: https://github.com/yourusername
 
-This project is for learning and demonstration purposes.
+LinkedIn: https://linkedin.com/in/yourprofile
+
+---
+
+## ⭐ If you like this project
+
+Give this repository a ⭐ on GitHub!
